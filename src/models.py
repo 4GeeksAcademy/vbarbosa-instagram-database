@@ -27,7 +27,7 @@ class User(db.Model):
 class Comment(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     comment_text: Mapped[str] = mapped_column(String(120))
-    authot_id: Mapped[int] = mapped_column("user.id")
+    author_id: Mapped[int] = mapped_column("user.id")
     post_id: Mapped[int] = mapped_column("post.id")
 
 
