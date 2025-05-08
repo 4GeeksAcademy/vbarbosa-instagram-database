@@ -4,9 +4,9 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 db = SQLAlchemy()
 
-class User(db.Model):
-    __tablename__='user'
-    id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+class Users(db.Model):
+    __tablename__='users'
+    id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
@@ -25,10 +25,10 @@ class User(db.Model):
             # do not serialize the password, its a security breach
         }
 
-class Post(db.Model):
-    __tablename__='post'
+class Posts(db.Model):
+    __tablename__='posts'
     id: Mapped[int] = mapped_column(primary_key=True)
-    users_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    users_id: Mapped[int] = mapped_column()
 
     def serialize(self):
         return {
@@ -36,12 +36,12 @@ class Post(db.Model):
             "user": self.users_id,
         }
 
-class Comment(db.Model):
-    __tablename__='comment'
+class Comments(db.Model):
+    __tablename__='comments'
     id: Mapped[int] = mapped_column(primary_key=True)
     comment_text: Mapped[str] = mapped_column(String(250))
-    author_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    posts_id: Mapped[int] = mapped_column(ForeignKey("post.id"))
+    author_id: Mapped[int] = mapped_column()
+    posts_id: Mapped[int] = mapped_column()
 
 
     def serialize(self):
@@ -57,7 +57,7 @@ class Media(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     type_media: Mapped[int] = mapped_column("enum??")
     url: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
-    posts_id: Mapped[int] = mapped_column(ForeignKey("post.id"))
+    posts_id: Mapped[int] = mapped_column()
 
     def serialize(self):
         return {
