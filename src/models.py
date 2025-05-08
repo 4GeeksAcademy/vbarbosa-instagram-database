@@ -1,17 +1,18 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean
+from sqlalchemy import String, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 db = SQLAlchemy()
 
 class User(db.Model):
+    __tablename__='user'
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
-    username: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    first_name: Mapped[str] = mapped_column(String(120), nullable=False)
-    last_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    first_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(50), nullable=False)
 
 
     def serialize(self):
@@ -23,42 +24,45 @@ class User(db.Model):
             "last name": self.last_name
             # do not serialize the password, its a security breach
         }
-    
+
+class Post(db.Model):
+    __tablename__='post'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    users_id: Mapped[int] = mapped_column("user_id")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user": self.users_id,
+        }
+
 class Comment(db.Model):
+    __tablename__='comment'
     id: Mapped[int] = mapped_column(primary_key=True)
     comment_text: Mapped[str] = mapped_column(String(120))
-    author_id: Mapped[int] = mapped_column("user.id")
-    post_id: Mapped[int] = mapped_column("post.id")
+    author_id: Mapped[int] = mapped_column(("user_id"), nullable=True)
+    posts_id: Mapped[int] = mapped_column("post_id")
 
 
     def serialize(self):
         return {
             "id": self.id,
             "comment": self.comment_text,
-            "author": self.authot_id,
-            "post": self.post_id
-        }
-
-class Post(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column("user.id")
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "user": self.user_id
+            "author": self.author_id,
+            "post": self.posts_id
         }
     
 class Media(db.Model):
+    __tablename__='media'
     id: Mapped[int] = mapped_column(primary_key=True)
     type_media: Mapped[int] = mapped_column("enum??")
-    url: Mapped[str] = mapped_column(String(120), nullable=False, unique=True)
-    post_id: Mapped[str] = mapped_column("post.id")
+    url: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+    posts_id: Mapped[int] = mapped_column("post_id")
 
     def serialize(self):
         return {
             "id": self.id,
             "type": self.type_media,
             "link": self.url,
-            "post": self.post_id
+            "post": self.posts_id
         }
