@@ -21,21 +21,21 @@ def upgrade():
     op.create_table('comment',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('comment_text', sa.String(length=120), nullable=False),
-    sa.Column('user.id', sa.Integer(), nullable=False),
-    sa.Column('post.id', sa.Integer(), nullable=False),
+    sa.Column('user.id', sa.Integer()),
+    sa.Column('post.id', sa.Integer()),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('media',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer()),
     sa.Column('enum??', sa.Integer(), nullable=False),
     sa.Column('url', sa.String(length=120), nullable=False),
-    sa.Column('post.id', sa.String(), nullable=False),
+    sa.Column('post.id', sa.Integer()),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('url')
     )
     op.create_table('post',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user.id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer()),
+    sa.Column('user.id', sa.Integer()),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
